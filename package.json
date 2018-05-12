@@ -1,0 +1,19 @@
+{
+  "name": "mongo",
+  "version": "1.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "create-project": "^1.2.1",
+    "create-react-app": "^1.5.2",
+    "mongoose": "^5.0.14",
+    "nodemon": "^1.17.3"
+  },
+  "devDependencies": {},
+  "description": ""
+}
