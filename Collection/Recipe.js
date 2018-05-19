@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Page = require("./Page");
 const User = require("./User");
+const Comment = require("./Comment");
 
 const RecipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -12,7 +13,7 @@ const RecipeSchema = new mongoose.Schema({
       required: true
     }
   ],
-  likes: Number,
+  likes: {type: Number, default: 0},
   comments: [{ type: mongoose.Schema.ObjectId, ref: "Comment" }],
   ingredients: [{ type: mongoose.Schema.ObjectId, ref: "Ingredient" }],
   cookingMinutes: Number

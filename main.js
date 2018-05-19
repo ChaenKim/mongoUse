@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const CommentSchema = require("./Comment");
-const IngredientSchema = require("./Ingredient");
-const PageSchema = require("./Page");
-const RecipeSchema = require("./Recipe");
-const UserSchema = require("./User");
+const CommentSchema = require("./Collection/Comment");
+const IngredientSchema = require("./Collection/Ingredient");
+const PageSchema = require("./Collection/Page");
+const RecipeSchema = require("./Collection/Recipe");
+const UserSchema = require("./Collection/User");
 
 const Comment = mongoose.model("Comment", CommentSchema);
 const Ingredient = mongoose.model("Ingredient", IngredientSchema);
@@ -13,35 +13,30 @@ const Recipe = mongoose.model("Recipe", RecipeSchema);
 const User = mongoose.model("User", UserSchema);
 
 try {
-  mongoose.connect("mongodb://chaenkim42:1234321@ds117960.mlab.com:17960/dbchtest");
+  mongoose.connect(
+    "mongodb://chaenkim42:1234321@ds117960.mlab.com:17960/dbchtest"
+  );
   console.log("connected");
 } catch (err) {
   console.log("connect error");
   console.log(err.message);
 }
 
-async function getDB() {
+async function setDB() {
   try {
-    const testIng1 = new Ingredient({
-      name: "감자",
-      category: "main"
-    });
-    const testIng2 = new Ingredient({
-      name: "청양고추",
-      category: "main"
-    });
-    const testIng3 = new Ingredient({
-      name: "양파",
-      category: "main"
-    });
-    const testIng4 = new Ingredient({
-      name: "식용유",
-      category: "main"
-    });
-    const testIng5 = new Ingredient({
-      name: "소금",
-      category: "sub"
-    })
+    await Comment.remove();
+    await Page.remove();
+    await Ingredient.remove();
+    await Recipe.remove();
+    await User.remove();
+    console.log("removed all data");
+
+    const testIng1 = new Ingredient({ name: "감자", category: "main" });
+    const testIng2 = new Ingredient({ name: "청양고추", category: "main" });
+    const testIng3 = new Ingredient({ name: "양파", category: "main" });
+    const testIng4 = new Ingredient({ name: "식용유", category: "main" });
+    const testIng5 = new Ingredient({ name: "소금", category: "sub" });
+
     testIng1.save();
     testIng2.save();
     testIng3.save();
@@ -60,26 +55,25 @@ async function getDB() {
       email: "chaen42@ajou.ac.kr",
       password: "test"
     });
-    testUser1.save();
 
     const testUser2 = new User({
       name: "kim",
       email: "chaenkim42@gmail.com",
       password: "test"
     });
-    testUser2.save();
 
     const testComment1 = new Comment({
       text: "좋아요",
       writtenBy: testUser2,
       writtenDate: new Date("2016-05-18T16:00:00Z")
-    })
+    });
+
+    testUser1.save();
+    testUser2.save();
     testComment1.save();
 
     let testComments = [];
-    testComments.push(testComment1)
-
-
+    testComments.push(testComment1);
 
     const testRecipe = new Recipe({
       title: "감자전",
@@ -92,7 +86,8 @@ async function getDB() {
 
     const testPage1 = new Page({
       index: 0,
-      text: "감자전의 느끼함을 잡아주기 위해 청양고추를 사용합니다.\n양파는 단맛과 감칠맛을 내기 위한 조미료로 사용했으나, 많이 사용시 수분이 생겨 질척해지니 조금만 넣으세요",
+      text:
+        "감자전의 느끼함을 잡아주기 위해 청양고추를 사용합니다.\n양파는 단맛과 감칠맛을 내기 위한 조미료로 사용했으나, 많이 사용시 수분이 생겨 질척해지니 조금만 넣으세요",
       recipeBelong: testRecipe
     });
     const testPage2 = new Page({
@@ -122,7 +117,8 @@ async function getDB() {
     });
     const testPage7 = new Page({
       index: 6,
-      text: "중불에 달구어진 팬에 식용유를 넉넉히 두르고 부침개를 노릇하게 부쳐주면 완성!",
+      text:
+        "중불에 달구어진 팬에 식용유를 넉넉히 두르고 부침개를 노릇하게 부쳐주면 완성!",
       recipeBelong: testRecipe
     });
 
@@ -146,13 +142,9 @@ async function getDB() {
     testRecipe.pages = testPages;
     testRecipe.save();
 
-  } catch (err) {
-    console.log(err.message);
-  }
-}
+    console.log("we have set all data");
+    console.log("데이터 불러오는중....");
 
-async function mongooseTest(){
-  try{
     let comments = await Comment.find();
     let pages = await Page.find();
     let ingredients = await Ingredient.find();
@@ -164,14 +156,13 @@ async function mongooseTest(){
     console.log("ingredients\n", ingredients);
     console.log("recipes\n", recipes);
     console.log("users\n", users);
-  }catch(err){
+  } catch (err) {
     console.log(err.message);
   }
 }
 
 try {
-  // getDB();
-  mongooseTest();
+  setDB();
 } catch (err) {
   console.log("error", err.message);
   return err;
